@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.RegisterRequest;
-import com.gabchak.example.dto.mappers.RegisterUserMapper;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
@@ -36,8 +35,6 @@ class UserServiceTest {
   private UserRepository userRepository;
   @Mock
   private PasswordEncoder passwordEncoder;
-  @Mock
-  private RegisterUserMapper mapper;
   @InjectMocks
   private UserService userService;
   private User user;
@@ -87,16 +84,10 @@ class UserServiceTest {
 
   @Test
   void register() {
-    User testUser = new User();
-    testUser.setFirstName(user.getFirstName());
-    testUser.setLastName(user.getLastName());
-    testUser.setId(user.getId());
-    testUser.setEmail(user.getEmail());
-    testUser.setPassword(user.getPassword());
+    User testUser = getNewTestUser();
     List<Role> roles = Collections.singletonList(Role.fromEnum(Roles.FREE_USER));
     testUser.setRoles(roles);
-    RegisterRequest request = new RegisterRequest();
-    when(mapper.map(request, User.class)).thenReturn(testUser);
+    RegisterRequest request = getRegisterRequest();
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(testUser);
     JwtUser actual = userService.register(request);
@@ -107,6 +98,25 @@ class UserServiceTest {
     String actualRoleName = actual.getAuthorities()
         .stream().findFirst().map(GrantedAuthority::getAuthority).orElse("");
     Assertions.assertThat(actualRoleName).isEqualTo("ROLE_" + Roles.FREE_USER.name());
+  }
+
+  private User getNewTestUser() {
+    User testUser = new User();
+    testUser.setFirstName(user.getFirstName());
+    testUser.setLastName(user.getLastName());
+    testUser.setId(user.getId());
+    testUser.setEmail(user.getEmail());
+    testUser.setPassword(user.getPassword());
+    return testUser;
+  }
+
+  private RegisterRequest getRegisterRequest() {
+    RegisterRequest request = new RegisterRequest();
+    request.setEmail(user.getEmail());
+    request.setPassword(user.getPassword());
+    request.setFirstName(user.getFirstName());
+    request.setLastName(user.getLastName());
+    return request;
   }
 
   @Test
