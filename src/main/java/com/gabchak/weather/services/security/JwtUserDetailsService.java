@@ -1,5 +1,6 @@
 package com.gabchak.weather.services.security;
 
+import com.gabchak.weather.models.User;
 import com.gabchak.weather.repositories.UserRepository;
 import com.gabchak.weather.services.security.jwt.JwtUser;
 import com.gabchak.weather.services.security.jwt.JwtUserFactory;
@@ -21,6 +22,14 @@ public class JwtUserDetailsService implements UserDetailsService {
     this.userRepository = userRepository;
   }
 
+  /**
+   * Originally the method should find user by username
+   * but because I use email instead of username in {@link User}
+   * the method finds user by email.
+   *
+   * Cause of overriding method of UserDetailsService
+   * the method must have the same name.
+   * */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return userRepository.findByEmail(username)
