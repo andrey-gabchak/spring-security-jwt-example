@@ -12,19 +12,23 @@ public class JwtUser implements UserDetails {
   private final String firstName;
   private final String lastName;
   private final String password;
+  /**
+   * Field is not used in {@link com.gabchak.example.models.User},
+   * so a user is always enabled.
+   */
   private final boolean enabled;
   private final Collection<? extends GrantedAuthority> authorities;
 
   /**
    * Constructor of the class.
    *
-   * @param id user integer id
-   * @param username email of user
-   * @param firstName name of user
-   * @param lastName surname of user
-   * @param password password of user
+   * @param id          user integer id
+   * @param username    email of user
+   * @param firstName   name of user
+   * @param lastName    surname of user
+   * @param password    password of user
    * @param authorities roles of user
-   * */
+   */
   public JwtUser(
       Integer id,
       String username,
