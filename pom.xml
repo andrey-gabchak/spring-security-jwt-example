@@ -12,7 +12,7 @@
 	<artifactId>spring-security-jwt-example</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-security-jwt-example</name>
-	<description>Intro test project</description>
+	<description>How to use spring security in you project</description>
 	<packaging>jar</packaging>
 
 	<properties>
