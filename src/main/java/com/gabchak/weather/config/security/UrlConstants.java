@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class UrlConstants {
 
   public static String[] PUBLIC_ACCESS = {
-      "/static/**/**",
       WebMvcConfiguration.API_PREFIX + LOGIN,
       WebMvcConfiguration.API_PREFIX + REGISTER,
   };
