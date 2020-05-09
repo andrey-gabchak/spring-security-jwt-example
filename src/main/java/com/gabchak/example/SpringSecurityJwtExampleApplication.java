@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WeatherTestProjectApplication {
+public class SpringSecurityJwtExampleApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(WeatherTestProjectApplication.class, args);
+    SpringApplication.run(SpringSecurityJwtExampleApplication.class, args);
   }
 }
