@@ -1,4 +1,4 @@
-package com.gabchak.weather.controllers;
+package com.gabchak.weather.rest;
 
 import com.gabchak.weather.dto.SubscriptionDto;
 import com.gabchak.weather.services.UserService;

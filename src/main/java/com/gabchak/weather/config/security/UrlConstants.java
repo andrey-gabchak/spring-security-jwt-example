@@ -1,11 +1,11 @@
 package com.gabchak.weather.config.security;
 
-import static com.gabchak.weather.controllers.AuthenticationController.LOGIN;
-import static com.gabchak.weather.controllers.AuthenticationController.REGISTER;
+import static com.gabchak.weather.rest.AuthenticationController.LOGIN;
+import static com.gabchak.weather.rest.AuthenticationController.REGISTER;
 
 
 import com.gabchak.weather.config.WebMvcConfiguration;
-import com.gabchak.weather.controllers.UserController;
+import com.gabchak.weather.rest.UserController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
