@@ -5,6 +5,7 @@ import static com.gabchak.example.constants.TestStaticModels.JWT_USER;
 import static com.gabchak.example.constants.TestStaticModels.USER;
 
 
+import com.gabchak.example.services.security.jwt.mapper.JwtUserFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

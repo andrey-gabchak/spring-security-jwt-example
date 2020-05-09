@@ -6,7 +6,7 @@ import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
 import com.gabchak.example.services.security.jwt.JwtUser;
-import com.gabchak.example.services.security.jwt.JwtUserFactory;
+import com.gabchak.example.services.security.jwt.mapper.JwtUserFactory;
 import com.gabchak.example.services.security.jwt.mapper.UserFactory;
 import java.time.LocalDate;
 import java.util.HashSet;

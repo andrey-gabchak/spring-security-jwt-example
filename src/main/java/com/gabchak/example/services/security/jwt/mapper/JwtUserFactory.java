@@ -1,7 +1,8 @@
-package com.gabchak.example.services.security.jwt;
+package com.gabchak.example.services.security.jwt.mapper;
 
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
+import com.gabchak.example.services.security.jwt.JwtUser;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
