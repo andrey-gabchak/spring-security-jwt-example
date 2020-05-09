@@ -22,9 +22,3 @@ jwt:
     expired: 86400000
     header:
       prefix: WeatherAuth_
-
-scheduling:
-  cron:
-    calculate-average-data: "0 0 0 * * *"
-    generate-weather-data: "0 0 */4 * * *"
-    subscription-check: "0 0 0 * * *"
