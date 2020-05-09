@@ -92,22 +92,4 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<activatedProperties>dev</activatedProperties>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>local</id>
-			<properties>
-				<activatedProperties>local</activatedProperties>
-			</properties>
-		</profile>
-	</profiles>
-
 </project>
