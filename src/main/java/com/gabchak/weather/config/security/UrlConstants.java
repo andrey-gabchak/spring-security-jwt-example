@@ -24,7 +24,6 @@ public class UrlConstants {
   };
 
   public static String[] ADMIN_ACCESS = {
-      "/swagger-ui.html",
       WebMvcConfiguration.API_PREFIX + UserController.CRUD_PATH + UserController.SUBSCRIBE
   };
 }
