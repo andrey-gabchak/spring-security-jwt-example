@@ -1,4 +1,4 @@
-package com.gabchak.example.config;
+package com.gabchak.example.config.security;
 
 
 import com.gabchak.example.config.security.UrlConstants;
