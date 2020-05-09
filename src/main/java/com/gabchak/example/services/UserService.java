@@ -2,14 +2,13 @@ package com.gabchak.example.services;
 
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.RegisterRequest;
-import com.gabchak.example.dto.mappers.RegisterUserMapper;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
 import com.gabchak.example.services.security.jwt.JwtUser;
 import com.gabchak.example.services.security.jwt.JwtUserFactory;
+import com.gabchak.example.services.security.jwt.mapper.UserFactory;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -23,22 +22,18 @@ import org.springframework.stereotype.Service;
 public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final RegisterUserMapper mapper;
 
   /**
    * Constructor of the class.
    *
    * @param userRepository  {@link UserRepository}
    * @param passwordEncoder {@link PasswordEncoder}
-   * @param mapper          {@link RegisterUserMapper}
    */
   @Autowired
   public UserService(UserRepository userRepository,
-                     PasswordEncoder passwordEncoder,
-                     RegisterUserMapper mapper) {
+                     PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
-    this.mapper = mapper;
   }
 
   /**
@@ -67,10 +62,8 @@ public class UserService {
    * @return a new {@link User}
    */
   public JwtUser register(RegisterRequest request) {
-    User user = mapper.map(request, User.class);
-    Role defaultRole = Role.fromEnum(Roles.FREE_USER);
+    User user = UserFactory.createNewUser(request);
     user.setPassword(passwordEncoder.encode(request.getPassword()));
-    user.setRoles(Collections.singletonList(defaultRole));
     User savedUser = userRepository.save(user);
     return JwtUserFactory.create(savedUser);
   }
