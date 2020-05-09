@@ -22,3 +22,8 @@ jwt:
     expired: 86400000
     header:
       prefix: WeatherAuth_
+
+cors:
+  hosts:
+    - "*"
+    - "http://localhost:3000"
