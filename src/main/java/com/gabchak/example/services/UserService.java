@@ -86,15 +86,15 @@ public class UserService {
       throws UsernameNotFoundException {
     Optional<User> byEmail = userRepository.findByEmail(email);
     return byEmail.map(user -> {
-      LocalDate paidBeforeDate = LocalDate.now().plusMonths(1);
-      LocalDate currentDate = user.getPaidBeforeDate();
-      if (currentDate == null || currentDate.isBefore(paidBeforeDate)) {
+      LocalDate subscriptionEndDate = LocalDate.now().plusMonths(1);
+      LocalDate currentDate = user.getSubscription();
+      if (currentDate == null || currentDate.isBefore(subscriptionEndDate)) {
         HashSet<Role> roles = new HashSet<>(user.getRoles());
         roles.add(Role.fromEnum(Roles.PAID_USER));
         user.setRoles(roles);
-        user.setPaidBeforeDate(paidBeforeDate);
+        user.setSubscription(subscriptionEndDate);
         userRepository.save(user);
-        return paidBeforeDate;
+        return subscriptionEndDate;
       }
       return currentDate;
     }).orElseThrow(() ->

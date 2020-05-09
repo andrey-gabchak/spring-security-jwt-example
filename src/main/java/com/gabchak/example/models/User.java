@@ -37,8 +37,8 @@ public class User {
   private String firstName;
   @Column(name = "last_name")
   private String lastName;
-  @Column(name = "paid_before")
-  private LocalDate paidBeforeDate;
+  @Column(name = "subscription")
+  private LocalDate subscription;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "users_roles",

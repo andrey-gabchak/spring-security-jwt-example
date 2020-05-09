@@ -52,10 +52,10 @@ public class UserController {
   public ResponseEntity findSubscription(Principal principal) {
     return userService.findByEmail(principal.getName())
         .map(user -> {
-          LocalDate paidBeforeDate = user.getPaidBeforeDate();
-          if (paidBeforeDate != null) {
+          LocalDate subscription = user.getSubscription();
+          if (subscription != null) {
             return ResponseEntity.ok(
-                new SubscriptionDto(user.getPaidBeforeDate()));
+                new SubscriptionDto(user.getSubscription()));
           }
           return ResponseEntity.noContent().build();
         })
