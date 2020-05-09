@@ -16,7 +16,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<java.version>8</java.version>
+		<java.version>14</java.version>
 		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
 		<frontend-maven-plugin.version>1.9.1</frontend-maven-plugin.version>
 		<frontend-maven-plugin.node.version>v12.16.2</frontend-maven-plugin.node.version>
