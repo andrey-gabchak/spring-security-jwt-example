@@ -28,6 +28,8 @@ public class UserController {
    * The method update subscription date
    * if it is not exist of expired.
    *
+   * You can get user data from Principal.
+   *
    * @param principal user params from spring security
    * @return {@link SubscriptionDto}
    * */
@@ -40,6 +42,8 @@ public class UserController {
   /**
    * The method returns subscription date
    * if the date exists.
+   *
+   * You can get user data from Principal.
    *
    * @param principal user params from spring security
    * @return {@link SubscriptionDto}
