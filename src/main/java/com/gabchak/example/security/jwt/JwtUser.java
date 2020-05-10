@@ -26,6 +26,10 @@ public class JwtUser implements UserDetails {
 
   /**
    * Constructor of the class.
+   * Fields 'enabled', 'accountNonExpired'
+   * 'accountNonLocked', 'credentialsNonExpired'
+   * are not used in {@link com.gabchak.example.models.User},
+   * so always true.
    *
    * @param id          user integer id
    * @param username    email of user
@@ -33,11 +37,6 @@ public class JwtUser implements UserDetails {
    * @param lastName    surname of user
    * @param password    password of user
    * @param authorities roles of user
-   *
-   * Fields 'enabled', 'accountNonExpired'
-   * 'accountNonLocked', 'credentialsNonExpired'
-   * are not used in {@link com.gabchak.example.models.User},
-   * so always true.
    */
   public JwtUser(
       Integer id,
