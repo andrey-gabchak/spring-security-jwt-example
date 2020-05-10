@@ -2,9 +2,11 @@ package com.gabchak.example.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 public class JwtUser implements UserDetails {
 
   private final Integer id;
@@ -17,6 +19,13 @@ public class JwtUser implements UserDetails {
    * so a user is always enabled.
    */
   private final boolean enabled;
+  @JsonIgnore
+  private final boolean accountNonExpired;
+  @JsonIgnore
+  private final boolean accountNonLocked;
+  @JsonIgnore
+  private final boolean credentialsNonExpired;
+
   private final Collection<? extends GrantedAuthority> authorities;
 
   /**
@@ -28,6 +37,11 @@ public class JwtUser implements UserDetails {
    * @param lastName    surname of user
    * @param password    password of user
    * @param authorities roles of user
+   *
+   * Fields 'enabled', 'accountNonExpired'
+   * 'accountNonLocked', 'credentialsNonExpired'
+   * are not used in {@link com.gabchak.example.models.User},
+   * so always true.
    */
   public JwtUser(
       Integer id,
@@ -44,57 +58,8 @@ public class JwtUser implements UserDetails {
     this.password = password;
     this.authorities = authorities;
     this.enabled = true;
-  }
-
-  @JsonIgnore
-  public Integer getId() {
-    return id;
-  }
-
-  @Override
-  public String getUsername() {
-    return username;
-  }
-
-  @JsonIgnore
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @JsonIgnore
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @JsonIgnore
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  public String getFirstname() {
-    return firstName;
-  }
-
-  public String getLastname() {
-    return lastName;
-  }
-
-  @JsonIgnore
-  @Override
-  public String getPassword() {
-    return password;
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return authorities;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return enabled;
+    this.accountNonExpired = true;
+    this.accountNonLocked = true;
+    this.credentialsNonExpired = true;
   }
 }
