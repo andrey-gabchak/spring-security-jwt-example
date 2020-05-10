@@ -1,4 +1,4 @@
-package com.gabchak.example.services.security.jwt;
+package com.gabchak.example.security.jwt;
 
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

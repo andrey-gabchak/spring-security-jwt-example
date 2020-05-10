@@ -1,4 +1,4 @@
-package com.gabchak.example.services.security.jwt;
+package com.gabchak.example.security.jwt;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;

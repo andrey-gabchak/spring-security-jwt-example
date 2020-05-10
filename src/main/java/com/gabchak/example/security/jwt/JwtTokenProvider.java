@@ -1,7 +1,7 @@
-package com.gabchak.example.services.security.jwt;
+package com.gabchak.example.security.jwt;
 
 import com.gabchak.example.dto.jwt.AuthResponse;
-import com.gabchak.example.services.security.JwtUserDetailsService;
+import com.gabchak.example.security.JwtUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

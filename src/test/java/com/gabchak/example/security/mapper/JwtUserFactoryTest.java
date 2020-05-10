@@ -1,11 +1,11 @@
-package com.gabchak.example.services.security.jwt;
+package com.gabchak.example.security.mapper;
 
 import static com.gabchak.example.constants.TestStaticModels.AUTHORITIES;
 import static com.gabchak.example.constants.TestStaticModels.JWT_USER;
 import static com.gabchak.example.constants.TestStaticModels.USER;
 
 
-import com.gabchak.example.services.security.jwt.mapper.JwtUserFactory;
+import com.gabchak.example.security.jwt.JwtUser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

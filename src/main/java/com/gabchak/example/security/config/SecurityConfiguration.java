@@ -1,9 +1,9 @@
-package com.gabchak.example.config.security;
+package com.gabchak.example.security.config;
 
 
 import com.gabchak.example.dto.enums.Roles;
-import com.gabchak.example.services.security.jwt.JwtConfigurer;
-import com.gabchak.example.services.security.jwt.JwtTokenProvider;
+import com.gabchak.example.security.jwt.JwtConfigurer;
+import com.gabchak.example.security.jwt.JwtTokenProvider;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -71,7 +71,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(clientOrigins);
-    clientOrigins.forEach(System.out::println);
 
     configuration.setAllowedMethods(List.of(
         HttpMethod.GET.name(),

@@ -1,4 +1,4 @@
-package com.gabchak.example.services.security.jwt;
+package com.gabchak.example.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;

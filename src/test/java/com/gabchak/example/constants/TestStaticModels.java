@@ -3,7 +3,7 @@ package com.gabchak.example.constants;
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
-import com.gabchak.example.services.security.jwt.JwtUser;
+import com.gabchak.example.security.jwt.JwtUser;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

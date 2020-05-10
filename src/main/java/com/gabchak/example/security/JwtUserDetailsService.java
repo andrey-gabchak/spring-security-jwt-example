@@ -1,9 +1,9 @@
-package com.gabchak.example.services.security;
+package com.gabchak.example.security;
 
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
-import com.gabchak.example.services.security.jwt.JwtUser;
-import com.gabchak.example.services.security.jwt.mapper.JwtUserFactory;
+import com.gabchak.example.security.jwt.JwtUser;
+import com.gabchak.example.security.mapper.JwtUserFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

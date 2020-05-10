@@ -1,4 +1,4 @@
-package com.gabchak.example.config.security;
+package com.gabchak.example.security.config;
 
 import static com.gabchak.example.rest.AuthenticationController.LOGIN;
 import static com.gabchak.example.rest.AuthenticationController.REGISTER;

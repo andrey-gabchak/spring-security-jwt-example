@@ -1,4 +1,4 @@
-package com.gabchak.example.services.security.jwt.mapper;
+package com.gabchak.example.security.mapper;
 
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.RegisterRequest;

@@ -1,4 +1,4 @@
-package com.gabchak.example.services.security;
+package com.gabchak.example.security;
 
 import static com.gabchak.example.constants.TestStaticModels.JWT_USER;
 import static com.gabchak.example.constants.TestStaticModels.USER;

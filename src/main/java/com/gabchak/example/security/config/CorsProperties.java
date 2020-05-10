@@ -1,4 +1,4 @@
-package com.gabchak.example.config.security;
+package com.gabchak.example.security.config;
 
 import java.util.List;
 import lombok.Getter;
