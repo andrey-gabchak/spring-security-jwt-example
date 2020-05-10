@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-  private static final String AUTHORIZATION_HEADER = "Authorization";
   private String secret;
   private final long validityInMilliseconds;
   private final String authHeaderPrefix;
@@ -130,7 +130,7 @@ public class JwtTokenProvider {
    * @return token
    */
   public String resolveToken(HttpServletRequest req) {
-    String authorization = req.getHeader(AUTHORIZATION_HEADER);
+    String authorization = req.getHeader(HttpHeaders.AUTHORIZATION);
     return authorization != null && authorization.startsWith(authHeaderPrefix)
         ? authorization.substring(authHeaderPrefix.length()) : null;
   }
