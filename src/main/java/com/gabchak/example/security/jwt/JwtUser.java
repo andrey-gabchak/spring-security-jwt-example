@@ -14,10 +14,6 @@ public class JwtUser implements UserDetails {
   private final String firstName;
   private final String lastName;
   private final String password;
-  /**
-   * Field is not used in {@link com.gabchak.example.models.User},
-   * so a user is always enabled.
-   */
   private final boolean enabled;
   @JsonIgnore
   private final boolean accountNonExpired;
