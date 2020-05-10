@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 public class JwtUser implements UserDetails {
-
   private final Integer id;
   private final String username;
   private final String firstName;
@@ -21,7 +20,6 @@ public class JwtUser implements UserDetails {
   private final boolean accountNonLocked;
   @JsonIgnore
   private final boolean credentialsNonExpired;
-
   private final Collection<? extends GrantedAuthority> authorities;
 
   /**
