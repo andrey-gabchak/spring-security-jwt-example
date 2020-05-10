@@ -2,6 +2,7 @@ package com.gabchak.example.security.config;
 
 
 import com.gabchak.example.dto.enums.Roles;
+import com.gabchak.example.security.constant.ApiPathConstants;
 import com.gabchak.example.security.jwt.JwtConfigurer;
 import com.gabchak.example.security.jwt.JwtTokenProvider;
 import java.util.List;
@@ -55,10 +56,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers(UrlConstants.PAID_USER_ACCESS).hasRole(Roles.PAID_USER.name())
-        .antMatchers(UrlConstants.ADMIN_ACCESS).hasRole(Roles.ADMIN.name())
-        .antMatchers(UrlConstants.FREE_USER_ACCESS).hasRole(Roles.FREE_USER.name())
-        .antMatchers(UrlConstants.PUBLIC_ACCESS).permitAll()
+        .antMatchers(ApiPathConstants.PAID_USER_ACCESS).hasRole(Roles.PAID_USER.name())
+        .antMatchers(ApiPathConstants.ADMIN_ACCESS).hasRole(Roles.ADMIN.name())
+        .antMatchers(ApiPathConstants.FREE_USER_ACCESS).hasRole(Roles.FREE_USER.name())
+        .antMatchers(ApiPathConstants.PUBLIC_ACCESS).permitAll()
         .anyRequest().authenticated()
         .and()
         .apply(new JwtConfigurer(jwtTokenProvider));

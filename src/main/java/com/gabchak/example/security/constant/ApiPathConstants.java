@@ -1,4 +1,4 @@
-package com.gabchak.example.security.config;
+package com.gabchak.example.security.constant;
 
 import static com.gabchak.example.rest.AuthenticationController.LOGIN;
 import static com.gabchak.example.rest.AuthenticationController.REGISTER;
@@ -10,7 +10,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UrlConstants {
+public class ApiPathConstants {
 
   public static String[] PUBLIC_ACCESS = {
       WebMvcConfiguration.API_PREFIX + LOGIN,
