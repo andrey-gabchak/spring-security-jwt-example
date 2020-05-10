@@ -17,10 +17,6 @@
 
 	<properties>
 		<java.version>14</java.version>
-		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
-		<frontend-maven-plugin.version>1.9.1</frontend-maven-plugin.version>
-		<frontend-maven-plugin.node.version>v12.16.2</frontend-maven-plugin.node.version>
-		<frontend-maven-plugin.npm.version>6.14.4</frontend-maven-plugin.npm.version>
 		<jwt.version>0.9.1</jwt.version>
 		<mysql.version>8.0.19</mysql.version>
 		<flywaydb.version>6.4.0</flywaydb.version>
