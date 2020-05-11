@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS registered_users (
   password VARCHAR(255) NOT NULL,
   first_name VARCHAR(100),
   last_name VARCHAR(100),
-  paid_before DATE
+  subscription DATE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
