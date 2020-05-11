@@ -4,9 +4,10 @@ import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.RegisterRequest;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
-import java.util.Collections;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.Collections;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserFactory {

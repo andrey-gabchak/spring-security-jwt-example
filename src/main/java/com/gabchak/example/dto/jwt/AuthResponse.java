@@ -1,13 +1,14 @@
 package com.gabchak.example.dto.jwt;
 
-import java.util.Collection;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.Collection;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthResponse {
 
   private final String token;
