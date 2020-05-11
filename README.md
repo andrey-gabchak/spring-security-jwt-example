@@ -9,6 +9,11 @@
 - Lombok
 
 -----------
+maven - 'master' branch
+
+gradle - 'gradle' branch
+
+-----------
 
 At first launch, Flyway will create tables 
 for users and roles if they don't exist.
