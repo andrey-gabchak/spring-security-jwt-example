@@ -12,7 +12,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   public static final String API_PREFIX = "/api/v1";
 
   /**
-   * Sets prefix '/api/v1' to all rest controllers.
+   * Adds prefix '/api/v1' to all rest controllers.
    */
   public void configurePathMatch(PathMatchConfigurer configurer) {
     configurer.addPathPrefix(API_PREFIX,
