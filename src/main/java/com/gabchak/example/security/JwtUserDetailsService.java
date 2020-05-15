@@ -1,7 +1,7 @@
 package com.gabchak.example.security;
 
 import com.gabchak.example.dto.jwt.JwtUser;
-import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
+import com.gabchak.example.dto.mapper.UserJwtUserMapper;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class JwtUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
-  private final RegisterRequestUserMapper mapper;
+  private final UserJwtUserMapper mapper;
 
   /**
    * Originally the method should find user by username
