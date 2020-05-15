@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import static com.gabchak.example.rest.AuthenticationController.LOGIN;
 import static com.gabchak.example.rest.AuthenticationController.REGISTER;
 
+/**
+ * Grouped controllers paths for security configuration.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiPathConstants {
 
