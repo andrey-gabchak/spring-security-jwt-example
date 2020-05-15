@@ -1,5 +1,6 @@
 package com.gabchak.example.services;
 
+import static com.gabchak.example.constants.TestStaticModels.JWT_FREE_USER;
 import static com.gabchak.example.constants.TestStaticModels.USER;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -7,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.RegisterRequest;
+import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
+import com.gabchak.example.dto.mapper.UserJwtUserMapper;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
@@ -19,6 +22,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,26 +39,30 @@ class UserServiceTest {
   private UserRepository userRepository;
   @Mock
   private PasswordEncoder passwordEncoder;
+  @Mock
+  private RegisterRequestUserMapper registerRequestUserMapper;
+  @Mock
+  private UserJwtUserMapper userJwtUserMapper;
   @InjectMocks
   private UserService userService;
-  private User user;
+  private User freeUser;
 
   @BeforeEach
   void setUp() {
-    user = new User();
-    user.setFirstName(USER.getFirstName());
-    user.setLastName(USER.getLastName());
-    user.setId(USER.getId());
-    user.setEmail(USER.getEmail());
-    user.setPassword(USER.getPassword());
+    freeUser = new User();
+    freeUser.setFirstName(USER.getFirstName());
+    freeUser.setLastName(USER.getLastName());
+    freeUser.setId(USER.getId());
+    freeUser.setEmail(USER.getEmail());
+    freeUser.setPassword(USER.getPassword());
     List<Role> roles = Collections.singletonList(Role.fromEnum(Roles.FREE_USER));
-    user.setRoles(roles);
+    freeUser.setRoles(roles);
   }
 
   @Test
   void save() {
-    when(userRepository.save(user)).thenReturn(user);
-    User actual = userService.save(user);
+    when(userRepository.save(freeUser)).thenReturn(freeUser);
+    User actual = userService.save(freeUser);
     comparingUsersWithoutRoles(actual, USER);
     String actualRoleName = actual.getRoles()
         .stream().findFirst().map(Role::getName).orElse("");
@@ -64,10 +72,10 @@ class UserServiceTest {
   @Test
   void findByEmail_found() {
     String email = "email";
-    when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+    when(userRepository.findByEmail(email)).thenReturn(Optional.of(freeUser));
     Optional<User> optionalUser = userService.findByEmail(email);
     if (optionalUser.isPresent()) {
-      comparingUsersWithoutRoles(optionalUser.get(), user);
+      comparingUsersWithoutRoles(optionalUser.get(), freeUser);
     } else {
       Assertions.fail("user not found");
     }
@@ -84,46 +92,35 @@ class UserServiceTest {
 
   @Test
   void register() {
-    User testUser = getNewTestUser();
-    List<Role> roles = Collections.singletonList(Role.fromEnum(Roles.FREE_USER));
-    testUser.setRoles(roles);
     RegisterRequest request = getRegisterRequest();
-    when(passwordEncoder.encode(any())).thenReturn("password");
-    when(userRepository.save(any())).thenReturn(testUser);
+    when(registerRequestUserMapper.map(request, User.class)).thenReturn(freeUser);
+    when(passwordEncoder.encode(ArgumentMatchers.any())).thenReturn("password");
+    when(userRepository.save(ArgumentMatchers.any())).thenReturn(freeUser);
+    when(userJwtUserMapper.map(freeUser, JwtUser.class)).thenReturn(JWT_FREE_USER);
     JwtUser actual = userService.register(request);
     Assertions.assertThat(actual)
-        .isEqualToComparingOnlyGivenFields(user,
+        .isEqualToComparingOnlyGivenFields(JWT_FREE_USER,
             "id", "firstName", "lastName", "password");
-    Assertions.assertThat(actual.getUsername()).isEqualTo(user.getEmail());
+    Assertions.assertThat(actual.getUsername()).isEqualTo(freeUser.getEmail());
     String actualRoleName = actual.getAuthorities()
         .stream().findFirst().map(GrantedAuthority::getAuthority).orElse("");
     Assertions.assertThat(actualRoleName).isEqualTo("ROLE_" + Roles.FREE_USER.name());
   }
 
-  private User getNewTestUser() {
-    User testUser = new User();
-    testUser.setFirstName(user.getFirstName());
-    testUser.setLastName(user.getLastName());
-    testUser.setId(user.getId());
-    testUser.setEmail(user.getEmail());
-    testUser.setPassword(user.getPassword());
-    return testUser;
-  }
-
   private RegisterRequest getRegisterRequest() {
     RegisterRequest request = new RegisterRequest();
-    request.setEmail(user.getEmail());
-    request.setPassword(user.getPassword());
-    request.setFirstName(user.getFirstName());
-    request.setLastName(user.getLastName());
+    request.setEmail(freeUser.getEmail());
+    request.setPassword(freeUser.getPassword());
+    request.setFirstName(freeUser.getFirstName());
+    request.setLastName(freeUser.getLastName());
     return request;
   }
 
   @Test
   void subscribe() {
     String email = "admin@gmail.com";
-    when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-    when(userRepository.save(user)).thenReturn(user);
+    when(userRepository.findByEmail(email)).thenReturn(Optional.of(freeUser));
+    when(userRepository.save(freeUser)).thenReturn(freeUser);
     LocalDate actual = userService.subscribe(email);
     Assertions.assertThat(actual).isEqualTo(LocalDate.now().plusMonths(1));
   }

@@ -5,6 +5,7 @@ import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.dto.jwt.JwtUser;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -24,6 +25,7 @@ public class TestStaticModels {
           new SimpleGrantedAuthority("ROLE_" + role.getName()))
       .collect(Collectors.toList());
   public static final JwtUser JWT_USER = new JwtUser();
+  public static final JwtUser JWT_FREE_USER = new JwtUser();
 
   public static final User USER;
 
@@ -42,5 +44,18 @@ public class TestStaticModels {
     JWT_USER.setLastName("lastName");
     JWT_USER.setPassword("password");
     JWT_USER.setAuthorities(AUTHORITIES);
+
+    JWT_FREE_USER.setId(1);
+    JWT_FREE_USER.setUsername("admin@gmail.com");
+    JWT_FREE_USER.setFirstName("firstName");
+    JWT_FREE_USER.setLastName("lastName");
+    JWT_FREE_USER.setPassword("password");
+    JWT_FREE_USER.setAuthorities(
+        Collections.singletonList(
+            new SimpleGrantedAuthority(
+                "ROLE_".concat(Roles.FREE_USER.name()
+                )
+            )
+        ));
   }
 }
