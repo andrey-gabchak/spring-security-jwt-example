@@ -3,7 +3,7 @@ package com.gabchak.example.constants;
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
-import com.gabchak.example.security.jwt.JwtUser;
+import com.gabchak.example.dto.jwt.JwtUser;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,12 +23,7 @@ public class TestStaticModels {
       .map(role ->
           new SimpleGrantedAuthority("ROLE_" + role.getName()))
       .collect(Collectors.toList());
-  public static final JwtUser JWT_USER = new JwtUser(1,
-      "admin@gmail.com",
-      "firstName",
-      "lastName",
-      "password",
-      AUTHORITIES);
+  public static final JwtUser JWT_USER = new JwtUser();
 
   public static final User USER;
 
@@ -40,5 +35,12 @@ public class TestStaticModels {
     USER.setLastName("lastName");
     USER.setId(1);
     USER.setRoles(ROLES);
+
+    JWT_USER.setId(1);
+    JWT_USER.setUsername("admin@gmail.com");
+    JWT_USER.setFirstName("firstName");
+    JWT_USER.setLastName("lastName");
+    JWT_USER.setPassword("password");
+    JWT_USER.setAuthorities(AUTHORITIES);
   }
 }

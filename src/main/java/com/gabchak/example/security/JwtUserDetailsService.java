@@ -1,9 +1,9 @@
 package com.gabchak.example.security;
 
+import com.gabchak.example.dto.jwt.JwtUser;
 import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
-import com.gabchak.example.security.jwt.JwtUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

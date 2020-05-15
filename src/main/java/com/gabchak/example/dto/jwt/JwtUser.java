@@ -1,4 +1,4 @@
-package com.gabchak.example.security.jwt;
+package com.gabchak.example.dto.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
@@ -15,12 +15,16 @@ public class JwtUser implements UserDetails {
   private String firstName;
   private String lastName;
   private String password;
-  private boolean enabled;
-  @JsonIgnore
-  private boolean accountNonExpired;
-  @JsonIgnore
-  private boolean accountNonLocked;
-  @JsonIgnore
-  private boolean credentialsNonExpired;
   private Collection<? extends GrantedAuthority> authorities;
+  /**
+   * Fields below are not used in {@link com.gabchak.example.models.User},
+   * so, always true.
+   */
+  private boolean enabled = Boolean.TRUE;
+  @JsonIgnore
+  private boolean accountNonExpired = Boolean.TRUE;
+  @JsonIgnore
+  private boolean accountNonLocked = Boolean.TRUE;
+  @JsonIgnore
+  private boolean credentialsNonExpired = Boolean.TRUE;
 }

@@ -2,7 +2,7 @@ package com.gabchak.example.dto.mapper;
 
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
-import com.gabchak.example.security.jwt.JwtUser;
+import com.gabchak.example.dto.jwt.JwtUser;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -36,10 +36,6 @@ public class UserJwtUserMapper extends ConfigurableMapper {
       jwtUser.setPassword(user.getPassword());
       jwtUser.setAuthorities(mapRolesToAuthorities(user.getRoles()));
       jwtUser.setUsername(user.getEmail());
-      jwtUser.setAccountNonExpired(Boolean.TRUE);
-      jwtUser.setAccountNonLocked(Boolean.TRUE);
-      jwtUser.setCredentialsNonExpired(Boolean.TRUE);
-      jwtUser.setEnabled(Boolean.TRUE);
     }
 
     private List<GrantedAuthority> mapRolesToAuthorities(Collection<Role> userRoles) {
