@@ -20,6 +20,7 @@
 		<jwt.version>0.9.1</jwt.version>
 		<mysql.version>8.0.19</mysql.version>
 		<flywaydb.version>6.4.0</flywaydb.version>
+		<orika.version>1.5.4</orika.version>
 	</properties>
 
 	<dependencies>
@@ -40,6 +41,12 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>ma.glasnost.orika</groupId>
+			<artifactId>orika-core</artifactId>
+			<version>${orika.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

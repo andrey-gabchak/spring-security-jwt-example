@@ -2,39 +2,31 @@ package com.gabchak.example.services;
 
 import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.RegisterRequest;
+import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
+import com.gabchak.example.dto.mapper.UserJwtUserMapper;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
 import com.gabchak.example.security.jwt.JwtUser;
-import com.gabchak.example.security.mapper.JwtUserFactory;
 import com.gabchak.example.security.mapper.UserFactory;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-
-  /**
-   * Constructor of the class.
-   *
-   * @param userRepository  {@link UserRepository}
-   * @param passwordEncoder {@link PasswordEncoder}
-   */
-  @Autowired
-  public UserService(UserRepository userRepository,
-                     PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
-  }
+  private final RegisterRequestUserMapper registerRequestUserMapper;
+  private final UserJwtUserMapper userJwtUserMapper;
 
   /**
    * Saves a new user.
@@ -62,10 +54,10 @@ public class UserService {
    * @return a new {@link User}
    */
   public JwtUser register(RegisterRequest request) {
-    User user = UserFactory.createNewUser(request);
+    User user = registerRequestUserMapper.map(request, User.class);
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     User savedUser = userRepository.save(user);
-    return JwtUserFactory.create(savedUser);
+    return userJwtUserMapper.map(savedUser, JwtUser.class);
   }
 
   /**
