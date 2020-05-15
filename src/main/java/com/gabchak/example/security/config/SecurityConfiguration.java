@@ -5,6 +5,7 @@ import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.security.constant.ApiPathConstants;
 import com.gabchak.example.security.jwt.JwtConfigurer;
 import com.gabchak.example.security.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,16 +27,10 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private final JwtTokenProvider jwtTokenProvider;
-  private final List<String> clientOrigins;
-
-  @Autowired
-  public SecurityConfiguration(JwtTokenProvider jwtTokenProvider,
-             CorsProperties corsProperties) {
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.clientOrigins = corsProperties.getHosts();
-  }
+  private final CorsProperties corsProperties;
 
   @Bean
   @Override
@@ -72,7 +67,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(clientOrigins);
+    configuration.setAllowedOrigins(corsProperties.getHosts());
 
     configuration.setAllowedMethods(List.of(
         HttpMethod.GET.name(),
