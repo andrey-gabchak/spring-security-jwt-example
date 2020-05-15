@@ -4,7 +4,7 @@ import com.gabchak.example.dto.SubscriptionDto;
 import com.gabchak.example.services.UserService;
 import java.security.Principal;
 import java.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,16 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(UserController.CRUD_PATH)
+@RequiredArgsConstructor
 public class UserController {
   public static final String CRUD_PATH = "/users";
   public static final String SUBSCRIBE = "/subscribe";
   private final UserService userService;
-
-  @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
-
 
   /**
    * The method update subscription date
