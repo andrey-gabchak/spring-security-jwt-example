@@ -14,8 +14,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
 @Getter
 @Setter
@@ -27,7 +27,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
-  @NonNull
+  @org.springframework.lang.NonNull
   @Column(name = "email")
   private String email;
   @NonNull

@@ -2,11 +2,11 @@ package com.gabchak.example.rest;
 
 
 import com.gabchak.example.dto.jwt.AuthResponse;
+import com.gabchak.example.dto.jwt.JwtUser;
 import com.gabchak.example.dto.jwt.LoginRequest;
 import com.gabchak.example.dto.jwt.RegisterRequest;
-import com.gabchak.example.services.UserService;
 import com.gabchak.example.security.jwt.JwtTokenProvider;
-import com.gabchak.example.security.jwt.JwtUser;
+import com.gabchak.example.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

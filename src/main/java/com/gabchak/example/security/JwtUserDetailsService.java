@@ -1,11 +1,11 @@
 package com.gabchak.example.security;
 
+import com.gabchak.example.dto.jwt.JwtUser;
+import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
-import com.gabchak.example.security.jwt.JwtUser;
-import com.gabchak.example.security.mapper.JwtUserFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,14 +13,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
-
-  @Autowired
-  public JwtUserDetailsService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+  private final RegisterRequestUserMapper mapper;
 
   /**
    * Originally the method should find user by username
@@ -34,7 +31,7 @@ public class JwtUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return userRepository.findByEmail(username)
         .map(user -> {
-          JwtUser jwtUser = JwtUserFactory.create(user);
+          JwtUser jwtUser = mapper.map(user, JwtUser.class);
           log.info("IN loadUserByUsername - user with username: {} successfully loaded", username);
           return jwtUser;
         }).orElseThrow(() ->
