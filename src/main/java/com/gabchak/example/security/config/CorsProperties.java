@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * Component for extraction host list from application.yml.
- * cors: - prefix
- *   hosts: - list name must be the same as in yml file
+ * <br/>
+ * cors - prefix
+ * <br/>
+ * hosts - list name must be the same as in yml file
  */
 @Component
 @ConfigurationProperties(prefix = "cors")
