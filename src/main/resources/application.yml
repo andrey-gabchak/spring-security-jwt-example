@@ -21,7 +21,7 @@ jwt:
     secret: bearerSecretJwtKey
     expired: 86400000
     header:
-      prefix: WeatherAuth_
+      prefix: BearerAuth_
 
 cors:
   hosts:
