@@ -9,6 +9,9 @@ import com.gabchak.example.rest.UserController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Grouped controllers paths for security configuration.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiPathConstants {
 
