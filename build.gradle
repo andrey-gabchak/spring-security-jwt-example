@@ -16,7 +16,7 @@ ext {
 	lombokVersion = "1.18.12"
 	orikaVersion = "1.5.4"
 	javaxValidationVersion = "2.0.1.Final"
-	jjwtVersion = "0.11.1"
+	jjwtVersion = "0.9.1"
 }
 
 dependencies {
@@ -31,7 +31,7 @@ dependencies {
 
 	compile "ma.glasnost.orika:orika-core:${orikaVersion}"
 	compile "javax.validation:validation-api:${javaxValidationVersion}"
-	compile "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+	compile "io.jsonwebtoken:jjwt:${jjwtVersion}"
 
 	implementation 'org.flywaydb:flyway-core'
 	runtimeOnly 'mysql:mysql-connector-java'
