@@ -7,7 +7,7 @@ import com.gabchak.example.dto.jwt.LoginRequest;
 import com.gabchak.example.dto.jwt.RegisterRequest;
 import com.gabchak.example.security.jwt.JwtTokenProvider;
 import com.gabchak.example.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequiredArgsConstructor
 public class AuthenticationController {
   public static final String LOGIN = "/login";
   public static final String REGISTER = "/register";
@@ -30,25 +31,6 @@ public class AuthenticationController {
   private final JwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;
   private final UserService userService;
-
-  /**
-   * Controller constructor.
-   *
-   * @param authManager {@link AuthenticationManager}
-   * @param jwtTokenProvider {@link JwtTokenProvider}
-   * @param userDetailsService {@link UserDetailsService}
-   * @param userService {@link UserService}
-   */
-  @Autowired
-  public AuthenticationController(AuthenticationManager authManager,
-                                  JwtTokenProvider jwtTokenProvider,
-                                  UserDetailsService userDetailsService,
-                                  UserService userService) {
-    this.authenticationManager = authManager;
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.userDetailsService = userDetailsService;
-    this.userService = userService;
-  }
 
   /**
    * The method login an existing user.
