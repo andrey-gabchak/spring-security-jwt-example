@@ -13,7 +13,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserJwtUserMapper extends ConfigurableMapper {
   @Override
   protected void configure(MapperFactory factory) {

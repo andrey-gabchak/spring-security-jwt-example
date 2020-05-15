@@ -10,7 +10,9 @@ import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
 import java.util.Collections;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RegisterRequestUserMapper extends ConfigurableMapper {
 
     @Override
