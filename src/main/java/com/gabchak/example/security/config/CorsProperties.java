@@ -10,9 +10,9 @@ import java.util.List;
 /**
  * Component for extraction host list from application.yml.
  * <br/>
- * cors: - prefix
+ * cors - prefix
  * <br/>
- * hosts: - list name must be the same as in yml file
+ * hosts - list name must be the same as in yml file
  */
 @Component
 @ConfigurationProperties(prefix = "cors")
