@@ -2,14 +2,15 @@ package com.gabchak.example.rest;
 
 import com.gabchak.example.dto.SubscriptionDto;
 import com.gabchak.example.services.UserService;
-import java.security.Principal;
-import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(UserController.CRUD_PATH)
