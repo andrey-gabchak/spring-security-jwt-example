@@ -18,7 +18,7 @@ server:
 
 jwt:
   token:
-    secret: weatherJwtKey
+    secret: bearerSecretJwtKey
     expired: 86400000
     header:
       prefix: WeatherAuth_
