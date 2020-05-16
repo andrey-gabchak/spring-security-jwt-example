@@ -103,7 +103,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_failEmailValidation_missingDomainName() {
+  void login_fail_validationEmail_missingDomainName() {
     JSONObject json = new JSONObject();
     json.put("email", "non@.com");
     json.put("password", "nonexist");
@@ -120,7 +120,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_failEmailValidation_missingDomainZone() {
+  void login_fail_validationEmail_missingDomainZone() {
     JSONObject json = new JSONObject();
     json.put("email", "non@test.");
     json.put("password", "nonexist");
@@ -137,7 +137,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_failEmailValidation_missingDomain() {
+  void login_fail_validationEmail_missingDomain() {
     JSONObject json = new JSONObject();
     json.put("email", "non@");
     json.put("password", "nonexist");
@@ -154,7 +154,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_failEmailValidation_missingMailBoxName() {
+  void login_fail_validationEmail_missingMailBoxName() {
     JSONObject json = new JSONObject();
     json.put("email", "@gmail.com");
     json.put("password", "nonexist");
@@ -171,7 +171,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_failEmailValidation_missingPassword() {
+  void login_fail_validationEmail_missingPassword() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "");
