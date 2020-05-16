@@ -14,6 +14,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   /**
    * Adds prefix '/api/v1' to all rest controllers.
    */
+  @Override
   public void configurePathMatch(PathMatchConfigurer configurer) {
     configurer.addPathPrefix(API_PREFIX,
         HandlerTypePredicate.forAnnotation(RestController.class));

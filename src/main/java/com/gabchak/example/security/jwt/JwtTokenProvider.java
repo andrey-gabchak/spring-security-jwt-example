@@ -2,7 +2,17 @@ package com.gabchak.example.security.jwt;
 
 import com.gabchak.example.dto.jwt.AuthResponse;
 import com.gabchak.example.security.JwtUserDetailsService;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,14 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -139,11 +141,7 @@ public class JwtTokenProvider {
    * @return is valid
    */
   public boolean validateToken(String token) {
-    try {
-      Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-      return !claims.getBody().getExpiration().before(new Date());
-    } catch (JwtException | IllegalArgumentException e) {
-      throw new JwtAuthenticationException("JWT token is expired or invalid");
-    }
+    Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+    return !claims.getBody().getExpiration().before(new Date());
   }
 }

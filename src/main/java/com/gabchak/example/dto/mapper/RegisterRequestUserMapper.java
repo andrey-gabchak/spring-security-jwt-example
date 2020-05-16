@@ -23,7 +23,7 @@ public class RegisterRequestUserMapper extends ConfigurableMapper {
                 .register();
     }
 
-    private class RegisterDtoUserMapperImpl extends CustomMapper<RegisterRequest, User> {
+    private static class RegisterDtoUserMapperImpl extends CustomMapper<RegisterRequest, User> {
         @Override
         public void mapAtoB(RegisterRequest registerRequest, User user, MappingContext context) {
             user.setEmail(registerRequest.getEmail());

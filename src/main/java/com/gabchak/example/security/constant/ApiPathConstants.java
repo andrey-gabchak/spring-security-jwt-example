@@ -1,12 +1,13 @@
 package com.gabchak.example.security.constant;
 
+import static com.gabchak.example.rest.AuthenticationController.LOGIN;
+import static com.gabchak.example.rest.AuthenticationController.REGISTER;
+
+
 import com.gabchak.example.config.WebMvcConfiguration;
 import com.gabchak.example.rest.UserController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import static com.gabchak.example.rest.AuthenticationController.LOGIN;
-import static com.gabchak.example.rest.AuthenticationController.REGISTER;
 
 /**
  * Grouped controllers paths for security configuration.

@@ -6,7 +6,7 @@ import com.gabchak.example.security.constant.ApiPathConstants;
 import com.gabchak.example.security.jwt.JwtConfigurer;
 import com.gabchak.example.security.jwt.JwtTokenProvider;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -25,10 +25,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private final JwtTokenProvider jwtTokenProvider;
-  private final CorsProperties corsProperties;
+  private final List<String> clientOrigins;
+
+  @Autowired
+  public SecurityConfiguration(JwtTokenProvider jwtTokenProvider,
+             CorsProperties corsProperties) {
+    this.jwtTokenProvider = jwtTokenProvider;
+    this.clientOrigins = corsProperties.getHosts();
+  }
 
   @Bean
   @Override
@@ -61,11 +67,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   /**
    * The bean configure CORS policy.
-   */
+   * */
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(corsProperties.getHosts());
+    configuration.setAllowedOrigins(clientOrigins);
 
     configuration.setAllowedMethods(List.of(
         HttpMethod.GET.name(),

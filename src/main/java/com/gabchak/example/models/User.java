@@ -1,12 +1,21 @@
 package com.gabchak.example.models;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.lang.NonNull;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -18,7 +27,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
-  @org.springframework.lang.NonNull
+  @NonNull
   @Column(name = "email")
   private String email;
   @NonNull

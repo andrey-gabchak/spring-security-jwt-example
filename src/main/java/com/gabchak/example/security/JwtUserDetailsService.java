@@ -4,6 +4,7 @@ import com.gabchak.example.dto.jwt.JwtUser;
 import com.gabchak.example.dto.mapper.UserJwtUserMapper;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
+import com.gabchak.example.util.UserNotFoundExceptionMessageGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +36,7 @@ public class JwtUserDetailsService implements UserDetailsService {
           log.info("IN loadUserByUsername - user with username: {} successfully loaded", username);
           return jwtUser;
         }).orElseThrow(() ->
-            new UsernameNotFoundException("User with username: " + username + " not found"));
+            new UsernameNotFoundException(
+                UserNotFoundExceptionMessageGenerator.generateMessage(username)));
   }
 }

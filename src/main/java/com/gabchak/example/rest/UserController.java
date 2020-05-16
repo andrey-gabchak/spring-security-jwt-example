@@ -44,16 +44,10 @@ public class UserController {
    * @return {@link SubscriptionDto}
    * */
   @GetMapping(SUBSCRIBE)
-  public ResponseEntity findSubscription(Principal principal) {
+  public ResponseEntity<SubscriptionDto> findSubscription(Principal principal) {
     return userService.findByEmail(principal.getName())
-        .map(user -> {
-          LocalDate subscription = user.getSubscription();
-          if (subscription != null) {
-            return ResponseEntity.ok(
-                new SubscriptionDto(user.getSubscription()));
-          }
-          return ResponseEntity.noContent().build();
-        })
+        .filter(user -> user.getSubscription() != null)
+        .map(user -> ResponseEntity.ok().body(new SubscriptionDto(user.getSubscription())))
         .orElseGet(ResponseEntity.noContent()::build);
   }
 }
