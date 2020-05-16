@@ -189,4 +189,99 @@ class AuthenticationControllerTest {
   @Test
   void register() {
   }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationEmail_missingDomainName() {
+    JSONObject json = new JSONObject();
+    json.put("email", "non@.com");
+    json.put("password", "nonexist");
+    json.put("firstName", "firstName");
+    json.put("lastName", "lastName");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationEmail_missingDomainZone() {
+    JSONObject json = new JSONObject();
+    json.put("email", "non@test.");
+    json.put("password", "nonexist");
+    json.put("firstName", "firstName");
+    json.put("lastName", "lastName");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationEmail_missingDomain() {
+    JSONObject json = new JSONObject();
+    json.put("email", "non@");
+    json.put("password", "nonexist");
+    json.put("firstName", "firstName");
+    json.put("lastName", "lastName");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationEmail_missingMailBoxName() {
+    JSONObject json = new JSONObject();
+    json.put("email", "@gmail.com");
+    json.put("password", "nonexist");
+    json.put("firstName", "firstName");
+    json.put("lastName", "lastName");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationEmail_missingPassword() {
+    JSONObject json = new JSONObject();
+    json.put("email", "test@gmail.com");
+    json.put("password", "");
+    json.put("firstName", "firstName");
+    json.put("lastName", "lastName");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
 }
