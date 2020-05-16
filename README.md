@@ -38,4 +38,4 @@ and 3 default users:
 |free@gmail.com|free|FREE_USER|
 
 So, you don't have to worry about creating of test users. 
-You can sing in and check how it works.
+You can sign in and check how it works.
