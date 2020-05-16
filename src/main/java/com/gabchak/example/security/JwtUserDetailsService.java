@@ -35,6 +35,6 @@ public class JwtUserDetailsService implements UserDetailsService {
           log.info("IN loadUserByUsername - user with username: {} successfully loaded", username);
           return jwtUser;
         }).orElseThrow(() ->
-            new UsernameNotFoundException("User with username '" + username + "' not found"));
+            new UsernameNotFoundException("User with email '" + username + "' not found"));
   }
 }
