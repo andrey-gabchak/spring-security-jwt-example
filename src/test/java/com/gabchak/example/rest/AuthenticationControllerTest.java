@@ -1,6 +1,7 @@
 package com.gabchak.example.rest;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -18,12 +19,14 @@ import java.util.Collections;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -69,11 +72,31 @@ class AuthenticationControllerTest {
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(loginJson)
-        )
+    )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.token", is(token)))
         .andExpect(jsonPath("$.email", is(email)))
         .andExpect(jsonPath("$.roles.[0]", is(role)));
+  }
+
+  @SneakyThrows
+  @Test
+  void login_notFound() {
+    String loginJson = "{\"email\": \"non@exist.com\", \"password\": \"nonexist\"}";
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginJson))
+        .andExpect(status().is4xxClientError())
+        .andExpect(jsonPath("$.httpStatus", is("BAD_REQUEST")));
+  }
+
+  @Test
+  void register() {
   }
 }
