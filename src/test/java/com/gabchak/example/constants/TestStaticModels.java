@@ -4,7 +4,6 @@ import com.gabchak.example.dto.enums.Roles;
 import com.gabchak.example.dto.jwt.JwtUser;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestStaticModels {
 
-  public static final List<Role> ROLES = Arrays.asList(
+  public static final List<Role> ROLES = List.of(
       Role.fromEnum(Roles.ADMIN),
       Role.fromEnum(Roles.PAID_USER),
       Role.fromEnum(Roles.FREE_USER));
