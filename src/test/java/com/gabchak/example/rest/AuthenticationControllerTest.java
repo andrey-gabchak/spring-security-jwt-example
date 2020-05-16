@@ -186,8 +186,31 @@ class AuthenticationControllerTest {
         .andExpect(status().is4xxClientError());
   }
 
+  @SneakyThrows
   @Test
   void register() {
+    String email = "new@user.com";
+    String token = "token value";
+    String role = "ROLE_FREE_USER";
+
+    JSONObject json = new JSONObject();
+    json.put("email", email);
+    json.put("password", "pass");
+    json.put("firstName", "firstName");
+    json.put("lastName", "lastName");
+
+    List<String> authorities = Collections.singletonList(role);
+    AuthResponse authResponse = new AuthResponse(token, email, authorities);
+    when(jwtTokenProvider.buildAuthResponse(Mockito.any())).thenReturn(authResponse);
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.token", is(token)))
+        .andExpect(jsonPath("$.email", is(email)))
+        .andExpect(jsonPath("$.roles.[0]", is(role)));
   }
 
   @SneakyThrows
