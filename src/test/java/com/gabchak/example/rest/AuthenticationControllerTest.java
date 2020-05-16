@@ -96,6 +96,81 @@ class AuthenticationControllerTest {
         .andExpect(jsonPath("$.httpStatus", is("BAD_REQUEST")));
   }
 
+  @SneakyThrows
+  @Test
+  void login_failEmailValidation_missingDomainName() {
+    String loginJson = "{\"email\": \"non@.com\", \"password\": \"nonexist\"}";
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginJson))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void login_failEmailValidation_missingDomainZone() {
+    String loginJson = "{\"email\": \"non@test.\", \"password\": \"nonexist\"}";
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginJson))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void login_failEmailValidation_missingDomain() {
+    String loginJson = "{\"email\": \"non@\", \"password\": \"nonexist\"}";
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginJson))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void login_failEmailValidation_missingMailBoxName() {
+    String loginJson = "{\"email\": \"@gmail.com\", \"password\": \"nonexist\"}";
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginJson))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void login_failEmailValidation_missingPassword() {
+    String loginJson = "{\"email\": \"test@gmail.com\", \"password\": \"\"}";
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginJson))
+        .andExpect(status().is4xxClientError());
+  }
+
   @Test
   void register() {
   }
