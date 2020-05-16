@@ -18,6 +18,7 @@ import com.gabchak.example.services.UserService;
 import java.util.Collections;
 import java.util.List;
 import lombok.SneakyThrows;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,9 @@ class AuthenticationControllerTest {
   @Test
   void login_success() {
     String email = "test@gmail.com";
-    String loginJson = String.format("{\"email\": \"%s\", \"password\": \"pass\"}", email);
+    JSONObject json = new JSONObject();
+    json.put("email", email);
+    json.put("password", "pass");
     JwtUser jwtUser = new JwtUser();
     when(userDetailsService.loadUserByUsername(email)).thenReturn(jwtUser);
 
@@ -71,7 +74,7 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson)
+            .content(json.toString())
     )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +86,9 @@ class AuthenticationControllerTest {
   @SneakyThrows
   @Test
   void login_notFound() {
-    String loginJson = "{\"email\": \"non@exist.com\", \"password\": \"nonexist\"}";
+    JSONObject json = new JSONObject();
+    json.put("email", "non@exist.com");
+    json.put("password", "nonexist");
 
     doThrow(UsernameNotFoundException.class)
         .when(userDetailsService).loadUserByUsername(Mockito.any());
@@ -91,7 +96,7 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson))
+            .content(json.toString()))
         .andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$.httpStatus", is("BAD_REQUEST")));
   }
@@ -99,7 +104,9 @@ class AuthenticationControllerTest {
   @SneakyThrows
   @Test
   void login_failEmailValidation_missingDomainName() {
-    String loginJson = "{\"email\": \"non@.com\", \"password\": \"nonexist\"}";
+    JSONObject json = new JSONObject();
+    json.put("email", "non@.com");
+    json.put("password", "nonexist");
 
     doThrow(UsernameNotFoundException.class)
         .when(userDetailsService).loadUserByUsername(Mockito.any());
@@ -107,14 +114,16 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson))
+            .content(json.toString()))
         .andExpect(status().is4xxClientError());
   }
 
   @SneakyThrows
   @Test
   void login_failEmailValidation_missingDomainZone() {
-    String loginJson = "{\"email\": \"non@test.\", \"password\": \"nonexist\"}";
+    JSONObject json = new JSONObject();
+    json.put("email", "non@test.");
+    json.put("password", "nonexist");
 
     doThrow(UsernameNotFoundException.class)
         .when(userDetailsService).loadUserByUsername(Mockito.any());
@@ -122,14 +131,16 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson))
+            .content(json.toString()))
         .andExpect(status().is4xxClientError());
   }
 
   @SneakyThrows
   @Test
   void login_failEmailValidation_missingDomain() {
-    String loginJson = "{\"email\": \"non@\", \"password\": \"nonexist\"}";
+    JSONObject json = new JSONObject();
+    json.put("email", "non@");
+    json.put("password", "nonexist");
 
     doThrow(UsernameNotFoundException.class)
         .when(userDetailsService).loadUserByUsername(Mockito.any());
@@ -137,14 +148,16 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson))
+            .content(json.toString()))
         .andExpect(status().is4xxClientError());
   }
 
   @SneakyThrows
   @Test
   void login_failEmailValidation_missingMailBoxName() {
-    String loginJson = "{\"email\": \"@gmail.com\", \"password\": \"nonexist\"}";
+    JSONObject json = new JSONObject();
+    json.put("email", "@gmail.com");
+    json.put("password", "nonexist");
 
     doThrow(UsernameNotFoundException.class)
         .when(userDetailsService).loadUserByUsername(Mockito.any());
@@ -152,14 +165,16 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson))
+            .content(json.toString()))
         .andExpect(status().is4xxClientError());
   }
 
   @SneakyThrows
   @Test
   void login_failEmailValidation_missingPassword() {
-    String loginJson = "{\"email\": \"test@gmail.com\", \"password\": \"\"}";
+    JSONObject json = new JSONObject();
+    json.put("email", "test@gmail.com");
+    json.put("password", "");
 
     doThrow(UsernameNotFoundException.class)
         .when(userDetailsService).loadUserByUsername(Mockito.any());
@@ -167,7 +182,7 @@ class AuthenticationControllerTest {
     mockMvc.perform(
         post(LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(loginJson))
+            .content(json.toString()))
         .andExpect(status().is4xxClientError());
   }
 
