@@ -8,6 +8,7 @@ import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
 import com.gabchak.example.dto.jwt.JwtUser;
+import com.gabchak.example.util.UserNotFoundExceptionMessageGenerator;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
@@ -83,6 +84,6 @@ public class UserService {
       return currentDate;
     }).orElseThrow(() ->
         new UsernameNotFoundException(
-            "User with email '" + email + "' not found"));
+            UserNotFoundExceptionMessageGenerator.generateMessage(email)));
   }
 }
