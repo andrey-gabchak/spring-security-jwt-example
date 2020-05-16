@@ -1,5 +1,8 @@
 # Example of Spring Security configuration using JWT
 
+Just an example of Spring Security implementation with unit tests.
+You can clone and run it to find out how it works.
+
 - Spring Boot
 - Spring Security
 - JWT
