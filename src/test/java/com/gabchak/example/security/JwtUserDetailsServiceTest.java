@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 
 import com.gabchak.example.dto.jwt.JwtUser;
-import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
+import com.gabchak.example.dto.mapper.UserJwtUserMapper;
 import com.gabchak.example.repositories.UserRepository;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -26,7 +26,7 @@ class JwtUserDetailsServiceTest {
   @Mock
   private UserRepository userRepository;
   @Mock
-  private RegisterRequestUserMapper mapper;
+  private UserJwtUserMapper mapper;
 
   @Test
   void loadUserByUsername() {

@@ -2,18 +2,17 @@ package com.gabchak.example.services;
 
 import static com.gabchak.example.constants.TestStaticModels.JWT_FREE_USER;
 import static com.gabchak.example.constants.TestStaticModels.USER;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 
 import com.gabchak.example.dto.enums.Roles;
+import com.gabchak.example.dto.jwt.JwtUser;
 import com.gabchak.example.dto.jwt.RegisterRequest;
 import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
 import com.gabchak.example.dto.mapper.UserJwtUserMapper;
 import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
-import com.gabchak.example.dto.jwt.JwtUser;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
