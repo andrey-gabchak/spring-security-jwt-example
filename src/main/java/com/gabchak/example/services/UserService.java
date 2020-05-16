@@ -83,6 +83,6 @@ public class UserService {
       return currentDate;
     }).orElseThrow(() ->
         new UsernameNotFoundException(
-            "User Not Found with email: " + email));
+            "User with email '" + email + "' not found"));
   }
 }
