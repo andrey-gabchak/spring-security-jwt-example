@@ -1,18 +1,9 @@
 # Example of Spring Security configuration using JWT
 
+![techologies stack](https://repository-images.githubusercontent.com/262658312/c18fce00-97c5-11ea-99fb-ae7e85562362)
+
 Just an example of Spring Security implementation with unit tests.
 You can clone and run it to find out how it works.
-
-- Spring Security
-- Spring Boot
-- JWT
-- Maven/Gradle
-- MySQL
-- Flyway
-- Lombok
-- JUnit5
-- Mockito
-- Orika mapper
 
 -----------
 maven - 'master' branch
