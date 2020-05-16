@@ -171,7 +171,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_fail_validationEmail_missingPassword() {
+  void login_fail_validationPassword_missingPassword() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "");
@@ -268,7 +268,7 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationEmail_missingPassword() {
+  void register_fail_validationPassword_missingPassword() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "");
