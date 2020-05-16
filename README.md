@@ -3,13 +3,16 @@
 Just an example of Spring Security implementation with unit tests.
 You can clone and run it to find out how it works.
 
-- Spring Boot
 - Spring Security
+- Spring Boot
 - JWT
-- Maven
+- Maven/Gradle
 - MySQL
 - Flyway
 - Lombok
+- JUnit5
+- Mockito
+- Orika mapper
 
 -----------
 maven - 'master' branch
