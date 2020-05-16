@@ -24,14 +24,13 @@ public class ApiExceptionHandler {
       MalformedJwtException.class,
       SignatureException.class,
       IllegalArgumentException.class})
-  public ResponseEntity<ApiException> handleJwtAuthenticationException(RuntimeException e) {
-    ApiException apiException = new ApiException(
+  public ResponseEntity<ApiExceptionResponse> handleJwtAuthenticationException(RuntimeException e) {
+    ApiExceptionResponse exceptionResponse = new ApiExceptionResponse(
         e.getMessage(),
         HttpStatus.BAD_REQUEST,
-        ZonedDateTime.now()
-    );
+        ZonedDateTime.now());
     return ResponseEntity
         .badRequest()
-        .body(apiException);
+        .body(exceptionResponse);
   }
 }
