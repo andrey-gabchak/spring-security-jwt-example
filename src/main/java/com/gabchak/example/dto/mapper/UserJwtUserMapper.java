@@ -26,7 +26,7 @@ public class UserJwtUserMapper extends ConfigurableMapper {
             .register();
   }
 
-  private class UserJwtUserMapperImpl extends CustomMapper<User, JwtUser> {
+  private static class UserJwtUserMapperImpl extends CustomMapper<User, JwtUser> {
 
     public static final String GRANTED_AUTHORITY_PREFIX = "ROLE_";
 
