@@ -284,4 +284,42 @@ class AuthenticationControllerTest {
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
   }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationFirstName_missingFirstName() {
+    JSONObject json = new JSONObject();
+    json.put("email", "test@gmail.com");
+    json.put("password", "pass");
+    json.put("firstName", "");
+    json.put("lastName", "lastName");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @SneakyThrows
+  @Test
+  void register_fail_validationLastName_missingLastName() {
+    JSONObject json = new JSONObject();
+    json.put("email", "test@gmail.com");
+    json.put("password", "pass");
+    json.put("firstName", "firstName");
+    json.put("lastName", "");
+
+    doThrow(UsernameNotFoundException.class)
+        .when(userDetailsService).loadUserByUsername(Mockito.any());
+
+    mockMvc.perform(
+        post(LOGIN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.toString()))
+        .andExpect(status().is4xxClientError());
+  }
 }
