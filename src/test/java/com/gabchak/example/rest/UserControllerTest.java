@@ -1,50 +1,48 @@
 package com.gabchak.example.rest;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.anyString;
+import com.gabchak.example.JsonTestFactory;
+import com.gabchak.example.dto.SubscriptionDto;
+import com.gabchak.example.models.User;
+import com.gabchak.example.services.UserService;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.security.Principal;
+import java.time.LocalDate;
+import java.util.Optional;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-import com.gabchak.example.config.WebMvcConfiguration;
-import com.gabchak.example.models.User;
-import com.gabchak.example.security.config.CorsProperties;
-import com.gabchak.example.security.jwt.JwtTokenProvider;
-import com.gabchak.example.services.UserService;
-import java.time.LocalDate;
-import java.util.Optional;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-
-@WebMvcTest(controllers = UserController.class)
-@WithMockUser(authorities = "ROLE_FREE_USER", username = "test@gmail.com")
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
-  public static final String SUBSCRIBE =
-      WebMvcConfiguration.API_PREFIX + UserController.CRUD_PATH + UserController.SUBSCRIBE;
-
-  @MockBean
+  public static final String SUBSCRIBE = UserController.CRUD_PATH
+          + UserController.SUBSCRIBE;
+  public static final String TEST_EMAIL = "test@gmail.com";
+  @Mock
   private UserService userService;
-  @MockBean
-  private JwtTokenProvider jwtTokenProvider;
-  @MockBean
-  private CorsProperties corsProperties;
-  @MockBean
-  private AuthenticationManager authenticationManager;
-  @Autowired
-  private UserController userController;
-  @Autowired
+  @Mock
+  private Principal principal;
   private MockMvc mockMvc;
+
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders
+        .standaloneSetup(new UserController(userService))
+        .build();
+    when(principal.getName())
+        .thenReturn(TEST_EMAIL);
+  }
 
   @SneakyThrows
   @Test
@@ -52,24 +50,30 @@ class UserControllerTest {
     LocalDate subscriptionEndDate = LocalDate.now().plusMonths(1);
     User user = new User();
     user.setSubscription(subscriptionEndDate);
-    when(userService.findByEmail("test@gmail.com")).thenReturn(Optional.of(user));
+    SubscriptionDto expected = new SubscriptionDto(user.getSubscription());
+    when(userService.findByEmail(TEST_EMAIL))
+        .thenReturn(Optional.of(user));
 
     mockMvc
-        .perform(get(SUBSCRIBE))
+        .perform(get(SUBSCRIBE).principal(principal))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.date", is(subscriptionEndDate.toString())));
+        .andExpect(content().string(
+            JsonTestFactory.OBJECT_WRITER.writeValueAsString(expected)));
   }
 
   @SneakyThrows
   @Test
   void findSubscription() {
     LocalDate subscriptionEndDate = LocalDate.now().plusMonths(1);
-    when(userService.subscribe(anyString())).thenReturn(subscriptionEndDate);
+    SubscriptionDto expected = new SubscriptionDto(subscriptionEndDate);
+    when(userService.subscribe(TEST_EMAIL))
+        .thenReturn(subscriptionEndDate);
     mockMvc
-        .perform(put(SUBSCRIBE))
+        .perform(put(SUBSCRIBE).principal(principal))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.date", is(subscriptionEndDate.toString())));
+        .andExpect(content().string(
+            JsonTestFactory.OBJECT_WRITER.writeValueAsString(expected)));
   }
 }
