@@ -1,5 +1,6 @@
 package com.gabchak.example.rest;
 
+import com.gabchak.example.EntityTestFactory;
 import com.gabchak.example.JsonTestFactory;
 import com.gabchak.example.dto.SubscriptionDto;
 import com.gabchak.example.models.User;
@@ -48,7 +49,8 @@ class UserControllerTest {
   @Test
   void subscribe() {
     LocalDate subscriptionEndDate = LocalDate.now().plusMonths(1);
-    User user = new User();
+    User user = EntityTestFactory.buildUser();
+    user.setEmail(TEST_EMAIL);
     user.setSubscription(subscriptionEndDate);
     SubscriptionDto expected = new SubscriptionDto(user.getSubscription());
     when(userService.findByEmail(TEST_EMAIL))

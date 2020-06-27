@@ -1,41 +1,30 @@
 package com.gabchak.example.services;
 
 import com.gabchak.example.DtoTestFactory;
-import com.gabchak.example.dto.enums.Roles;
+import com.gabchak.example.EntityTestFactory;
 import com.gabchak.example.dto.jwt.JwtUser;
 import com.gabchak.example.dto.jwt.RegisterRequest;
 import com.gabchak.example.dto.mapper.RegisterRequestUserMapper;
 import com.gabchak.example.dto.mapper.UserJwtUserMapper;
-import com.gabchak.example.models.Role;
 import com.gabchak.example.models.User;
 import com.gabchak.example.repositories.UserRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-
-import static com.gabchak.example.constants.TestStaticModels.JWT_FREE_USER;
-import static com.gabchak.example.constants.TestStaticModels.USER;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-  private static final String TEST_EMAIL = "admin@gmail.com";
-  public static final String[] COMPARING_FIELDS =
-      {"id", "firstName", "lastName", "email", "password"};
   @Mock
   private UserRepository userRepository;
   @Mock
@@ -46,115 +35,84 @@ class UserServiceTest {
   private UserJwtUserMapper userJwtUserMapper;
   @InjectMocks
   private UserService userService;
-  private User freeUser;
-
-  @BeforeEach
-  void setUp() {
-    freeUser = new User();
-    freeUser.setFirstName(USER.getFirstName());
-    freeUser.setLastName(USER.getLastName());
-    freeUser.setId(USER.getId());
-    freeUser.setEmail(USER.getEmail());
-    freeUser.setPassword(USER.getPassword());
-    List<Role> roles = Collections.singletonList(Role.fromEnum(Roles.FREE_USER));
-    freeUser.setRoles(roles);
-  }
 
   @Test
   void save() {
+    User user = EntityTestFactory.buildUser();
     Mockito.
-        when(userRepository.save(freeUser))
-        .thenReturn(freeUser);
-    User actual = userService.save(freeUser);
+        when(userRepository.save(user))
+        .thenReturn(user);
 
-    String actualRoleName = actual.getRoles()
-        .stream().findFirst().map(Role::getName).orElse("");
+    User actual = userService.save(user);
 
-    Assertions
-        .assertThat(actual)
-        .isEqualToComparingOnlyGivenFields(USER, COMPARING_FIELDS);
-    Assertions
-        .assertThat(actualRoleName)
-        .isEqualTo(Roles.FREE_USER.name());
+    Assertions.assertEquals(user, actual);
   }
 
   @Test
   void findByEmail_found() {
+    User expected = EntityTestFactory.buildUser();
     Mockito
-        .when(userRepository.findByEmail(TEST_EMAIL))
-        .thenReturn(Optional.of(freeUser));
+        .when(userRepository.findByEmail(expected.getEmail()))
+        .thenReturn(Optional.of(expected));
 
-    Optional<User> optionalUser = userService.findByEmail(TEST_EMAIL);
+    Optional<User> optionalUser = userService.findByEmail(expected.getEmail());
 
     optionalUser
-        .ifPresentOrElse(user -> Assertions
-                .assertThat(user)
-                .isEqualToComparingOnlyGivenFields(freeUser, COMPARING_FIELDS),
+        .ifPresentOrElse(user -> Assertions.assertEquals(expected, user),
             () -> Assertions.fail("user not found"));
   }
 
   @Test
   void findByEmail_notFound() {
+    String email = RandomStringUtils.randomAlphabetic(20);
     Mockito
-        .when(userRepository.findByEmail(TEST_EMAIL))
+        .when(userRepository.findByEmail(email))
         .thenReturn(Optional.empty());
 
-    Optional<User> optionalUser = userService.findByEmail(TEST_EMAIL);
+    Optional<User> optionalUser = userService.findByEmail(email);
 
-    Assertions
-        .assertThatThrownBy(() ->
-            optionalUser.orElseThrow(Assertions.fail("user not found")))
-        .isInstanceOf(AssertionError.class);
+    org.junit.jupiter.api.Assertions.assertThrows(AssertionError.class,
+        () -> optionalUser.orElseThrow(Assertions.fail("user not found")));
   }
 
   @Test
   void register() {
-    RegisterRequest request = DtoTestFactory.getRegisterRequest(freeUser);
+    RegisterRequest request = DtoTestFactory.buildRegisterRequest();
+    User user = EntityTestFactory.buildUser(request);
+    JwtUser jwtUser = DtoTestFactory.buildJwtUser(user);
     Mockito
         .when(registerRequestUserMapper.map(request, User.class))
-        .thenReturn(freeUser);
+        .thenReturn(user);
     Mockito
-        .when(passwordEncoder.encode(ArgumentMatchers.any()))
-        .thenReturn("password");
+        .when(passwordEncoder.encode(request.getPassword()))
+        .thenReturn(user.getPassword());
     Mockito
-        .when(userRepository.save(ArgumentMatchers.any()))
-        .thenReturn(freeUser);
+        .when(userRepository.save(user))
+        .thenReturn(user);
     Mockito
-        .when(userJwtUserMapper.map(freeUser, JwtUser.class))
-        .thenReturn(JWT_FREE_USER);
+        .when(userJwtUserMapper.map(user, JwtUser.class))
+        .thenReturn(jwtUser);
 
     JwtUser actual = userService.register(request);
 
-    String actualRoleName = actual.getAuthorities()
-        .stream()
-        .findFirst()
-        .map(GrantedAuthority::getAuthority)
-        .orElse("");
-    Assertions.assertThat(actual)
-        .isEqualToComparingOnlyGivenFields(JWT_FREE_USER,
-            "id", "firstName", "lastName", "password");
-    Assertions
-        .assertThat(actual.getUsername())
-        .isEqualTo(freeUser.getEmail());
-    Assertions
-        .assertThat(actualRoleName)
-        .isEqualTo("ROLE_" + Roles.FREE_USER.name());
+    org.junit.jupiter.api.Assertions.assertEquals(jwtUser, actual);
   }
 
   @Test
   void subscribe() {
-    Mockito
-        .when(userRepository.findByEmail(TEST_EMAIL))
-        .thenReturn(Optional.of(freeUser));
-    Mockito
-        .when(userRepository.save(freeUser))
-        .thenReturn(freeUser);
+    User user = EntityTestFactory.buildUser();
+    LocalDate expected = LocalDate.now().plusMonths(1);
 
-    LocalDate actual = userService.subscribe(TEST_EMAIL);
+    Mockito
+        .when(userRepository.findByEmail(user.getEmail()))
+        .thenReturn(Optional.of(user));
+    Mockito
+        .when(userRepository.save(user))
+        .thenReturn(user);
 
-    Assertions
-        .assertThat(actual)
-        .isEqualTo(LocalDate.now().plusMonths(1));
+    LocalDate actual = userService.subscribe(user.getEmail());
+
+    org.junit.jupiter.api.Assertions.assertEquals(expected, actual);
   }
 
   @Test
@@ -164,9 +122,7 @@ class UserServiceTest {
         .when(userRepository.findByEmail(email))
         .thenReturn(Optional.empty());
 
-    Assertions
-        .assertThatThrownBy(() ->
-            userService.subscribe(email))
-        .isInstanceOf(UsernameNotFoundException.class);
+    Assertions.assertThrows(UsernameNotFoundException.class,
+        () -> userService.subscribe(email));
   }
 }

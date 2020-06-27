@@ -1,133 +1,120 @@
 package com.gabchak.example.rest;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-
-import com.gabchak.example.config.WebMvcConfiguration;
+import com.gabchak.example.DtoTestFactory;
+import com.gabchak.example.EntityTestFactory;
+import com.gabchak.example.JsonTestFactory;
 import com.gabchak.example.dto.jwt.AuthResponse;
 import com.gabchak.example.dto.jwt.JwtUser;
-import com.gabchak.example.security.config.CorsProperties;
+import com.gabchak.example.dto.jwt.LoginRequest;
+import com.gabchak.example.dto.jwt.RegisterRequest;
+import com.gabchak.example.models.User;
 import com.gabchak.example.security.jwt.JwtTokenProvider;
 import com.gabchak.example.services.UserService;
-import java.util.Collections;
-import java.util.List;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@WebMvcTest(controllers = AuthenticationController.class)
+import java.util.Collections;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTest {
 
-  public static final String LOGIN =
-      WebMvcConfiguration.API_PREFIX + AuthenticationController.LOGIN;
-  public static final String REGISTER =
-      WebMvcConfiguration.API_PREFIX + AuthenticationController.REGISTER;
-
-  @MockBean
-  private CorsProperties corsProperties;
-  @MockBean
+  @Mock
   private AuthenticationManager authenticationManager;
-  @MockBean
+  @Mock
   private JwtTokenProvider jwtTokenProvider;
-  @MockBean
+  @Mock
   private UserDetailsService userDetailsService;
-  @MockBean
+  @Mock
   private UserService userService;
-  @Autowired
   private MockMvc mockMvc;
-  @Autowired
-  private AuthenticationController controller;
+
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders
+        .standaloneSetup(new AuthenticationController(
+            authenticationManager,
+            jwtTokenProvider,
+            userDetailsService,
+            userService
+        ))
+        .build();
+  }
 
   @SneakyThrows
   @Test
   void login_success() {
-    String email = "test@gmail.com";
-    JSONObject json = new JSONObject();
-    json.put("email", email);
-    json.put("password", "pass");
-    JwtUser jwtUser = new JwtUser();
-    when(userDetailsService.loadUserByUsername(email)).thenReturn(jwtUser);
-
-    String token = "token value";
+    LoginRequest loginRequest = DtoTestFactory.buildLoginRequest();
+    User user = EntityTestFactory.buildUser();
+    JwtUser jwtUser = DtoTestFactory.buildJwtUser(user);
+    String token = RandomStringUtils.randomAlphabetic(50);
     String role = "ROLE_FREE_USER";
-    List<String> authorities = Collections.singletonList(role);
-    AuthResponse authResponse = new AuthResponse(token, email, authorities);
-    when(jwtTokenProvider.buildAuthResponse(jwtUser)).thenReturn(authResponse);
+    AuthResponse authResponse = new AuthResponse(
+        token,
+        loginRequest.getEmail(),
+        Collections.singletonList(role)
+    );
+
+    Mockito
+        .when(userDetailsService.loadUserByUsername(loginRequest.getEmail()))
+        .thenReturn(jwtUser);
+    Mockito
+        .when(jwtTokenProvider.buildAuthResponse(jwtUser))
+        .thenReturn(authResponse);
 
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json.toString())
+            .content(
+                JsonTestFactory.OBJECT_WRITER.writeValueAsString(loginRequest)
+            )
     )
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.token", is(token)))
-        .andExpect(jsonPath("$.email", is(email)))
-        .andExpect(jsonPath("$.roles.[0]", is(role)));
+        .andExpect(content().string(
+            JsonTestFactory.OBJECT_WRITER.writeValueAsString(authResponse)
+        ));
   }
 
   @SneakyThrows
   @Test
-  void login_notFound() {
-    JSONObject json = new JSONObject();
-    json.put("email", "non@exist.com");
-    json.put("password", "nonexist");
-
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
-    mockMvc.perform(
-        post(LOGIN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json.toString()))
-        .andExpect(status().is4xxClientError())
-        .andExpect(jsonPath("$.httpStatus", is("BAD_REQUEST")));
-  }
-
-  @SneakyThrows
-  @Test
-  void login_fail_validationEmail_missingDomainName() {
+  void login_validationFail_missingEmailDomainName() {
     JSONObject json = new JSONObject();
     json.put("email", "non@.com");
     json.put("password", "nonexist");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json.toString()))
+            .content(json.toString())
+    )
         .andExpect(status().is4xxClientError());
   }
 
   @SneakyThrows
   @Test
-  void login_fail_validationEmail_missingDomainZone() {
+  void login_validationFail_missingEmailDomainZone() {
     JSONObject json = new JSONObject();
     json.put("email", "non@test.");
     json.put("password", "nonexist");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -135,16 +122,13 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_fail_validationEmail_missingDomain() {
+  void login_validationFail_missingEmailDomain() {
     JSONObject json = new JSONObject();
     json.put("email", "non@");
     json.put("password", "nonexist");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -152,16 +136,13 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_fail_validationEmail_missingMailBoxName() {
+  void login_validationFail_missingMailBoxName() {
     JSONObject json = new JSONObject();
     json.put("email", "@gmail.com");
     json.put("password", "nonexist");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -169,16 +150,13 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void login_fail_validationPassword_missingPassword() {
+  void login_validationFail_emptyPassword() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -186,45 +164,51 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register() {
-    String email = "new@user.com";
-    String token = "token value";
+  void register_success() {
+    String token = RandomStringUtils.randomAlphabetic(50);
     String role = "ROLE_FREE_USER";
+    RegisterRequest registerRequest = DtoTestFactory.buildRegisterRequest();
+    User user = EntityTestFactory.buildUser(registerRequest);
+    JwtUser jwtUser = DtoTestFactory.buildJwtUser(user);
 
-    JSONObject json = new JSONObject();
-    json.put("email", email);
-    json.put("password", "pass");
-    json.put("firstName", "firstName");
-    json.put("lastName", "lastName");
+    AuthResponse authResponse = new AuthResponse(
+        token,
+        jwtUser.getUsername(),
+        Collections.singletonList(role));
 
-    List<String> authorities = Collections.singletonList(role);
-    AuthResponse authResponse = new AuthResponse(token, email, authorities);
-    when(jwtTokenProvider.buildAuthResponse(Mockito.any())).thenReturn(authResponse);
+    Mockito
+        .when(userService.register(Mockito.any(RegisterRequest.class)))
+        .thenReturn(jwtUser);
+    Mockito
+        .when(jwtTokenProvider.buildAuthResponse(jwtUser))
+        .thenReturn(authResponse);
+
+    String registerJson = JsonTestFactory.OBJECT_WRITER
+        .writeValueAsString(registerRequest);
+
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.REGISTER)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json.toString()))
+            .content(registerJson))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.token", is(token)))
-        .andExpect(jsonPath("$.email", is(email)))
-        .andExpect(jsonPath("$.roles.[0]", is(role)));
+        .andExpect(content().string(
+            JsonTestFactory.OBJECT_WRITER
+                .writeValueAsString(authResponse)
+        ));
   }
 
   @SneakyThrows
   @Test
-  void register_fail_validationEmail_missingDomainName() {
+  void register_validationFail_missingDomainName() {
     JSONObject json = new JSONObject();
     json.put("email", "non@.com");
     json.put("password", "nonexist");
     json.put("firstName", "firstName");
     json.put("lastName", "lastName");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -232,18 +216,15 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationEmail_missingDomainZone() {
+  void register_validationFail_missingEmailDomainZone() {
     JSONObject json = new JSONObject();
     json.put("email", "non@test.");
     json.put("password", "nonexist");
     json.put("firstName", "firstName");
     json.put("lastName", "lastName");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -251,18 +232,15 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationEmail_missingDomain() {
+  void register_validationFail_missingEmailDomain() {
     JSONObject json = new JSONObject();
     json.put("email", "non@");
     json.put("password", "nonexist");
     json.put("firstName", "firstName");
     json.put("lastName", "lastName");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -270,18 +248,15 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationEmail_missingMailBoxName() {
+  void register_validationFail_missingMailBoxName() {
     JSONObject json = new JSONObject();
     json.put("email", "@gmail.com");
     json.put("password", "nonexist");
     json.put("firstName", "firstName");
     json.put("lastName", "lastName");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.LOGIN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -289,18 +264,15 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationPassword_missingPassword() {
+  void register_validationFail_emptyPassword() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "");
     json.put("firstName", "firstName");
     json.put("lastName", "lastName");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.REGISTER)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -308,18 +280,15 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationFirstName_missingFirstName() {
+  void register_validationFail_emptyFirstName() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "pass");
     json.put("firstName", "");
     json.put("lastName", "lastName");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.REGISTER)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
@@ -327,18 +296,15 @@ class AuthenticationControllerTest {
 
   @SneakyThrows
   @Test
-  void register_fail_validationLastName_missingLastName() {
+  void register_validationFail_emptyLastName() {
     JSONObject json = new JSONObject();
     json.put("email", "test@gmail.com");
     json.put("password", "pass");
     json.put("firstName", "firstName");
     json.put("lastName", "");
 
-    doThrow(UsernameNotFoundException.class)
-        .when(userDetailsService).loadUserByUsername(Mockito.any());
-
     mockMvc.perform(
-        post(LOGIN)
+        post(AuthenticationController.REGISTER)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json.toString()))
         .andExpect(status().is4xxClientError());
