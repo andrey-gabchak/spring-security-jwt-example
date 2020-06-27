@@ -18,6 +18,7 @@ ext {
 	lombokVersion = "1.18.12"
 	orikaVersion = "1.5.4"
 	jjwtVersion = "0.9.1"
+	commonsLang3Version = "3.10"
 }
 
 dependencies {
@@ -33,6 +34,7 @@ dependencies {
 
 	compile "ma.glasnost.orika:orika-core:${orikaVersion}"
 	compile "io.jsonwebtoken:jjwt:${jjwtVersion}"
+	compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
 
 	implementation 'org.flywaydb:flyway-core'
 	runtimeOnly 'mysql:mysql-connector-java'
