@@ -71,7 +71,7 @@ class UserServiceTest {
 
     Optional<User> optionalUser = userService.findByEmail(email);
 
-    org.junit.jupiter.api.Assertions.assertThrows(AssertionError.class,
+    Assertions.assertThrows(AssertionError.class,
         () -> optionalUser.orElseThrow(Assertions.fail("user not found")));
   }
 
@@ -95,7 +95,7 @@ class UserServiceTest {
 
     JwtUser actual = userService.register(request);
 
-    org.junit.jupiter.api.Assertions.assertEquals(jwtUser, actual);
+    Assertions.assertEquals(jwtUser, actual);
   }
 
   @Test
@@ -112,7 +112,7 @@ class UserServiceTest {
 
     LocalDate actual = userService.subscribe(user.getEmail());
 
-    org.junit.jupiter.api.Assertions.assertEquals(expected, actual);
+    Assertions.assertEquals(expected, actual);
   }
 
   @Test
